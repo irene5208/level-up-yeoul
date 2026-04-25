@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="favicon.png">
 <title>여울이 육성 게임</title>
 
 <style>
 .item-img{width:40px;height:40px;border-radius:8px;object-fit:cover;}
-body{margin:0;font-family:Arial;background:#ffeef5;display:flex;justify-content:center;align-items:center;height:100vh;transition:.5s;}
-.game{width:100%;max-width:380px;height:90vh;background:#fff;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 10px 25px rgba(255,152,152,0.15);} 
+.game{width:100%;max-width:380px;height: 90dvh;;background:#fff;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 10px 25px rgba(255,152,152,0.15);} 
 .header{display:flex;justify-content:space-between;align-items:center;padding:10px 15px;}
 .title{font-size:20px;font-weight:bold;}
 .header-buttons{display:flex;gap:6px;}
@@ -34,14 +34,13 @@ small{color:#888;font-size:12px;}
 body{
   margin:0;
   font-family:Arial;
-  background:#ffeef5;
+  background:#fefbfd;
   display:flex;
   justify-content:center;
   align-items:center;
-  min-height:100vh; /* 🔥 변경 */
+  height:100vh;
 }
 </style>
-<link rel="icon" type="image/png" href="favicon.png">
 </head>
 <body>
 
@@ -292,25 +291,25 @@ items[type]--;
 if(type==='love'){
 if(effects.shield){alert('이미 보호막 있음!');items[type]++;return;}
 effects.shield=true;
-alert('💖 보호막 활성화!');
+alert('💖 보호막 활성화! 💖');
 }
 
 if(type==='apple'){
 if(effects.apple>=20){alert('이미 최대 강화!');items[type]++;return;}
 effects.apple+=5;
-alert('🍎 성공률 +5%!');
+alert('성공률 +5%!');
 }
 
 if(type==='curse'){
 effects.curse=true;
-alert('👻 다음 실패 시 돈 보호!');
+alert('다음 실패 시 돈 보호!');
 }
 
 if(type==='juice'){
 let r=Math.random();
-if(r<0.33){level++;alert('✨ 레벨 상승!');}
-else if(r<0.66){money*=2;alert('💰 돈 2배!');}
-else{level=0;alert('💀 레벨 초기화');}
+if(r<0.33){level++;alert('✨ 레벨 상승! ✨');}
+else if(r<0.66){money*=2;alert('💰 돈 2배! 💰');}
+else{level=0;alert('💀 레벨 초기화 ㅋ 💀');}
 }
 
 renderInventory();updateUI();
