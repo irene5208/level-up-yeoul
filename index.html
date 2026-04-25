@@ -60,7 +60,7 @@ body{
 
 <div style="display:flex;align-items:center;gap:8px;">
 <img src="images/apple.png" class="item-img">
-<div>썩은 사과<br><small>성공률 +5%</small></div>
+<div>썩은 사과<br><small>성공률 두배</small></div>
 <div>500억 <button onclick="buy('apple')">구매</button></div>
 </div><br>
 
@@ -179,7 +179,21 @@ const messages=[
 
 function getCost(){return Math.floor(baseCost*Math.pow(level+1,2));}
 function getSellPrice(){return Math.floor(getCost()*Math.pow(10,level));}
-function getSuccessRate(){let base= level===0?100: level<10?Math.max(60,100-level*4): level<=15?Math.max(5,60-(level-10)*11):5; return Math.min(100, base+effects.apple);} 
+function getSuccessRate(){
+  let base;
+
+  if(level === 0){
+    base = 100;
+  } else if(level < 10){
+    base = Math.max(60, 100 - level * 4);
+  } else if(level < 15){
+    base = Math.max(5, 60 - (level - 10) * 11);
+  } else {
+    base = 0.1; // 🔥 15레벨 이상 = 0.1%
+  }
+
+  return Math.min(100, base * (effects.apple || 1));
+}
 
 function feed(){
 let cost=getCost();
@@ -187,22 +201,31 @@ if(money<cost){alert('돈 부족');return;}
 
 money-=cost;
 
-if(Math.random()*100<getSuccessRate()){
-level++;
-showBubble();
+let success = Math.random()*100 < getSuccessRate();
+
+if(success){
+  level++;
+  showBubble();
 }else{
-if(effects.shield){effects.shield=false;}else{level=0;}
-if(effects.curse){money+=Math.floor(cost*0.5);effects.curse=false;}
-let box=document.getElementById('gameBox');
-box.classList.add('shake');
-document.body.classList.add('flash');
-setTimeout(()=>{box.classList.remove('shake');document.body.classList.remove('flash');},400);
+  if(effects.shield){effects.shield=false;}else{level=0;}
+  if(effects.curse){money+=Math.floor(cost*0.5);effects.curse=false;}
+
+  let box=document.getElementById('gameBox');
+  box.classList.add('shake');
+  document.body.classList.add('flash');
+  setTimeout(()=>{
+    box.classList.remove('shake');
+    document.body.classList.remove('flash');
+  },400);
 }
+
+// 🔥 여기 추가 (성공/실패 상관없이 1회 사용 후 제거)
+effects.apple = 0;
 
 updateUI();
 }
 
-function sell(){money+=getSellPrice();level=0;updateUI();}
+function sell(){money+=getSellPrice();level=0;updateUI();effects.apple = 0;}
 
 function showBubble(){const b=document.getElementById('bubble');b.innerText=messages[Math.floor(Math.random()*messages.length)];b.style.display='block';setTimeout(()=>b.style.display='none',2000);} 
 
@@ -234,9 +257,9 @@ img.src = 'images/' + level + '.png';
 updateBackground();
 
 let text='';
-if(effects.shield) text+='💖 보호막 ON<br>';
-if(effects.curse) text+='👻 저주 보호 ON<br>';
-if(effects.apple>0) text+=`🍎 확률 +${effects.apple}%`;
+if(effects.shield) text+='💖 보호막 ON 💖<br>';
+if(effects.curse) text+='저주 보호 ON<br>';
+if(effects.apple>0) text+=`확률 x${effects.apple}`;
 document.getElementById('buffs').innerHTML=text||'버프 없음';
 }
 
@@ -299,9 +322,14 @@ alert('💖 보호막 활성화! 💖');
 }
 
 if(type==='apple'){
-if(effects.apple>=20){alert('이미 최대 강화!');items[type]++;return;}
-effects.apple+=5;
-alert('성공률 +5%!');
+  if(effects.apple){
+    alert('이미 사용함!');
+    items[type]++;
+    return;
+  }
+
+  effects.apple = 2; // 확률 2배
+  alert('이번 시도 확률 2배!');
 }
 
 if(type==='curse'){
